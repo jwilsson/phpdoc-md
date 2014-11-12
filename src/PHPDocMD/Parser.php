@@ -159,7 +159,8 @@ class Parser
                         $nArgument['type'] = (string)$tag['type'];
                     }
                     if ((string)$tag['description']) {
-                        $nArgument['description'] = (string)$tag['description'];
+                        $description = (string)$tag['description'];
+                        $nArgument['description'] =  strip_tags(html_entity_decode($description));
                     }
                     if ((string)$tag['variable']) {
                         $nArgument['name'] = (string)$tag['variable'];
