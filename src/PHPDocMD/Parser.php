@@ -139,9 +139,16 @@ class Parser
 
             $return = $method->xpath('docblock/tag[@name="return"]');
             if (count($return)) {
-                $return = (string)$return[0]['type'];
-            } else {
-                $return = 'mixed';
+                $return = $return[0];
+                $description = (string)$return['description'];
+                $description = strip_tags(html_entity_decode($description));
+                //$description = str_replace('-', '    *', $description);
+                $description = str_replace('|', '\|', $description);
+
+                $return = array(
+                    'type' => (string) $return['type'],
+                    'description' => str_replace('|', '\|', $description)
+                );
             }
 
             $arguments = array();
@@ -160,7 +167,9 @@ class Parser
                     }
                     if ((string)$tag['description']) {
                         $description = (string)$tag['description'];
-                        $nArgument['description'] =  strip_tags(html_entity_decode($description));
+                        $description = strip_tags(html_entity_decode($description));
+
+                        $nArgument['description'] = str_replace('|', '\|', $description);
                     }
                     if ((string)$tag['variable']) {
                         $nArgument['name'] = (string)$tag['variable'];
@@ -176,17 +185,14 @@ class Parser
                 return ($argument['type']?$argument['type'] . ' ':'') . $argument['name'];
             }, $arguments));
 
-            $signature = $return . ' ' . $className . '::' . $methodName . '('.$argumentStr.')';
+            $signature = $return['type'] . ' ' . $className . '::' . $methodName . '('.$argumentStr.')';
 
             $methods[$methodName] = array(
                 'name' => $methodName,
                 'description' => (string)$method->docblock->description . "\n\n" . (string)$method->docblock->{"long-description"},
-                'visibility' => (string)$method['visibility'],
-                'abstract'   => ((string)$method['abstract'])=="true",
-                'static'   => ((string)$method['static'])=="true",
-                'deprecated' => count($class->xpath('docblock/tag[@name="deprecated"]'))>0,
                 'signature' => $signature,
                 'arguments' => $arguments,
+                'return' => $return,
                 'definedBy' => $className,
             );
 
