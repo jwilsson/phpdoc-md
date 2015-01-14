@@ -132,14 +132,19 @@ class Generator
         }
 
         $treeOutput = '';
-        $treeOutput = function($item, $fullString = '', $depth=0) use (&$treeOutput) {
+        $treeOutput = function($item, $fullString = '') use (&$treeOutput) {
 
             $output = '';
-            foreach($item as $name=>$subItems) {
+            foreach ($item as $name => $subItems) {
 
-                $fullName = $fullString?$fullString."\\".$name:$name;
-                $output.= str_repeat(' ', $depth*4) . '* ' . Generator::classLink($fullName, $name) . "\n";
-                $output.= $treeOutput($subItems, $fullName, $depth+1);
+                $fullName = $fullString ? $fullString . "\\" . $name : $name;
+                $link = Generator::classLink($fullName, $name);
+
+                if ($link) {
+                    $output .= '* ' . $link . "\n";
+                }
+
+                $output.= $treeOutput($subItems, $fullName);
 
             }
 
@@ -184,7 +189,7 @@ class Generator
                     file_put_contents('/tmp/classnotfound',$oneClass . "\n", FILE_APPEND);
                 }*/
 
-                $returnedClasses[] = $oneClass;
+                //$returnedClasses[] = $oneClass;
 
             } else {
 
