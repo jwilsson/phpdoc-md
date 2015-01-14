@@ -143,12 +143,14 @@ class Parser
                 $return = $return[0];
                 $description = (string)$return['description'];
                 $description = strip_tags(html_entity_decode($description));
-                //$description = str_replace('-', '    *', $description);
                 $description = str_replace('|', '\|', $description);
+                $description = str_replace('- ', '    * ', $description);
+
+                $type = str_replace('|', '\|', (string) $return['type']);
 
                 $return = array(
-                    'type' => (string) $return['type'],
-                    'description' => str_replace('|', '\|', $description)
+                    'type' => $type,
+                    'description' => $description
                 );
             }
 
@@ -164,11 +166,16 @@ class Parser
 
                     $tag = $tag[0];
                     if ((string)$tag['type']) {
-                        $nArgument['type'] = (string)$tag['type'];
+                        $type = str_replace('|', '\|', (string) $tag['type']);
+
+                        $nArgument['type'] = $type;
                     }
                     if ((string)$tag['description']) {
                         $description = (string)$tag['description'];
-                        $description = strip_tags(html_entity_decode($description));
+                        $description =  html_entity_decode($description);
+                        $description = str_replace('<li>', '    * ', $description);
+                        $description = strip_tags($description);
+                        $description = preg_replace('/^\h*\v+/m', '', $description); // Remove blank lines
 
                         $nArgument['description'] = str_replace('|', '\|', $description);
                     }
@@ -186,7 +193,9 @@ class Parser
                 return ($argument['type']?$argument['type'] . ' ':'') . $argument['name'];
             }, $arguments));
 
-            $signature = $return['type'] . ' ' . $className . '::' . $methodName . '('.$argumentStr.')';
+            $returnType = str_replace('\|', '|', $return['type']);
+            $argumentStr = str_replace('\|', '|', $argumentStr);
+            $signature = $returnType . ' ' . $className . '::' . $methodName . '('.$argumentStr.')';
 
             $methods[$methodName] = array(
                 'name' => $methodName,
