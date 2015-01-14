@@ -73,10 +73,11 @@ class Parser
 
         foreach($xml->xpath('file/class|file/interface') as $class) {
 
-            $className = (string)$class->full_name;
+            $className = (string) $class->full_name;
             $className = ltrim($className,'\\');
 
-            $fileName = str_replace('\\','-', $className) . '.md';
+            $fileName = str_replace('\\','-', $class->name) . '.md';
+            $fileName = strtolower($fileName);
 
             $implements = array();
 
