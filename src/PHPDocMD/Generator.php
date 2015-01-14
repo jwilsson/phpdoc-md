@@ -181,20 +181,12 @@ class Generator
 
             $myLabel = $label?:$oneClass;
 
-            if (!isset($classDefinitions[$oneClass])) {
+            if (isset($classDefinitions[$oneClass])) {
 
-                /*
-                $known = array('string', 'bool', 'array', 'int', 'mixed', 'resource', 'DOMNode', 'DOMDocument', 'DOMElement', 'PDO', 'callback', 'null', 'Exception', 'integer', 'DateTime');
-                if (!in_array($oneClass, $known)) {
-                    file_put_contents('/tmp/classnotfound',$oneClass . "\n", FILE_APPEND);
-                }*/
-
-                //$returnedClasses[] = $oneClass;
-
-            } else {
-
-                $link = str_replace('\\', '-', $oneClass);
+                $link = array_pop(explode('\\', $oneClass));
                 $link = strtr($linkTemplate, array('%c' => $link));
+                $link = str_replace('.md', '.html', $link);
+                $link = strtolower($link);
 
                 $returnedClasses[] = "[" . $myLabel . "](" . $link . ')';
 
