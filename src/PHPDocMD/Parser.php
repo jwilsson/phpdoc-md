@@ -197,9 +197,11 @@ class Parser
             $argumentStr = str_replace('\|', '|', $argumentStr);
             $signature = $returnType . ' ' . $className . '::' . $methodName . '('.$argumentStr.')';
 
+            $description = (string)$method->docblock->description . "\n" . (string)$method->docblock->{"long-description"};
+
             $methods[$methodName] = array(
                 'name' => $methodName,
-                'description' => (string)$method->docblock->description . "\n\n" . (string)$method->docblock->{"long-description"},
+                'description' => nl2br($description, false),
                 'signature' => $signature,
                 'arguments' => $arguments,
                 'return' => $return,
