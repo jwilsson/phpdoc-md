@@ -198,6 +198,7 @@ class Parser
             $signature = $returnType . ' ' . $className . '::' . $methodName . '('.$argumentStr.')';
 
             $description = (string)$method->docblock->description . "\n" . (string)$method->docblock->{"long-description"};
+            $description = preg_replace('@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.-]*(\?\S+)?)?)?)@', '[$1]($1)', $description);
 
             $methods[$methodName] = array(
                 'name' => $methodName,
