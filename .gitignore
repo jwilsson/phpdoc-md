@@ -1,6 +1,7 @@
-vendor/
-composer.lock
 .*.swp
+composer.lock
+docs
+vendor/
 
 # Binaries
 /bin/phpdoc
