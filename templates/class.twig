@@ -14,7 +14,7 @@ title: Method Reference - {{ shortClass }}
 {% if method.arguments %}
 #### Arguments
 {% for argument in method.arguments %}
-* {{ argument.name }} **{% if argument.type %}{{ argument.type }}{% else %}mixed{% endif %}**{% if argument.description %} - {{ argument.description }}{% endif %}
+* `{{ argument.name }}` **{% if argument.type %}{{ argument.type }}{% else %}mixed{% endif %}**{% if argument.description %} - {{ argument.description }}{% endif %}
 
 {% endfor %}
 
