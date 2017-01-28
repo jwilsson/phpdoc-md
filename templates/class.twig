@@ -3,9 +3,20 @@ layout: default
 title: Method Reference - {{ shortClass }}
 ---
 
+## Constants
+
+{% for constant in constants %}
+* **{{ constant.name }}**
+{% endfor %}
+
+## Methods
 {% for method in methods %}
 
 ### {{ method.name }}
+
+{% if method.deprecated %}
+_Deprecated: {{ method.deprecated.description }}_
+{% endif %}
 
     {{ method.signature|raw }}
 

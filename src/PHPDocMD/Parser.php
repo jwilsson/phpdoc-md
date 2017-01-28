@@ -154,8 +154,6 @@ class Parser
                 );
             }
 
-            $arguments = array();
-
             foreach($method->argument as $argument) {
 
                 $nArgument = array(
@@ -201,6 +199,20 @@ class Parser
             $description = trim($description);
             $description = preg_replace('@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.-]*(\?\S+)?)?)?)@', '[$1]($1)', $description);
 
+            $deprecated = $method->xpath('docblock/tag[@name="deprecated"]');
+            if (count($deprecated)) {
+                $deprecated = $deprecated[0];
+
+                $description = (string) $deprecated['description'];
+                $description = strip_tags(html_entity_decode($description));
+
+                $deprecated = array(
+                    'description' => $description,
+                );
+            }
+
+            $arguments = array();
+
             $methods[$methodName] = array(
                 'name' => $methodName,
                 'description' => nl2br($description, false),
@@ -208,6 +220,7 @@ class Parser
                 'arguments' => $arguments,
                 'return' => $return,
                 'definedBy' => $className,
+                'deprecated' => $deprecated,
             );
 
         }
