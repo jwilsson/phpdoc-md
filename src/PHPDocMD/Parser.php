@@ -154,6 +154,8 @@ class Parser
                 );
             }
 
+            $arguments = array();
+
             foreach($method->argument as $argument) {
 
                 $nArgument = array(
@@ -210,8 +212,6 @@ class Parser
                     'description' => $description,
                 );
             }
-
-            $arguments = array();
 
             $methods[$methodName] = array(
                 'name' => $methodName,
