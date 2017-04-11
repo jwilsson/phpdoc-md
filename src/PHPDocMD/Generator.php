@@ -80,80 +80,15 @@ class Generator
         $GLOBALS['PHPDocMD_linkTemplate'] = $this->linkTemplate;
 
         $twig->addFilter('classLink', new Twig_Filter_Function('PHPDocMd\\Generator::classLink'));
-        foreach($this->classDefinitions as $className=>$data) {
 
+        foreach ($this->classDefinitions as $className => $data) {
             $output = $twig->render(
                 file_get_contents($this->templateDir . '/class.twig'),
                 $data
             );
+
             file_put_contents($this->outputDir . '/' . $data['fileName'], $output);
-
         }
-
-        $index = $this->createIndex();
-
-        $index = $twig->render(
-            file_get_contents($this->templateDir . '/index.twig'),
-            array(
-                'index' => $index,
-                'classDefinitions' => $this->classDefinitions,
-            )
-        );
-
-        file_put_contents($this->outputDir . '/index.md', $index);
-
-    }
-
-    /**
-     * Creates an index of classes and namespaces.
-     *
-     * I'm generating the actual markdown output here, which isn't great.. but
-     * it will have to do. If I don't want to make things too complicated.
-     *
-     * @return array
-     */
-    protected function createIndex() {
-
-        $tree = array();
-
-        foreach($this->classDefinitions as $className=>$classInfo) {
-
-            $current =& $tree;
-
-            foreach(explode('\\', $className) as $part) {
-
-                if (!isset($current[$part])) {
-                    $current[$part] = array();
-                }
-                $current =& $current[$part];
-
-            }
-
-        }
-
-        $treeOutput = '';
-        $treeOutput = function($item, $fullString = '') use (&$treeOutput) {
-
-            $output = '';
-            foreach ($item as $name => $subItems) {
-
-                $fullName = $fullString ? $fullString . "\\" . $name : $name;
-                $link = Generator::classLink($fullName, $name);
-
-                if ($link) {
-                    $output .= '* ' . $link . "\n";
-                }
-
-                $output.= $treeOutput($subItems, $fullName);
-
-            }
-
-            return $output;
-
-        };
-
-        return $treeOutput($tree);
-
     }
 
     /**
