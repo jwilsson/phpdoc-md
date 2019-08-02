@@ -1,12 +1,9 @@
 <?php
-
 namespace PHPDocMD;
 
-use
-    Twig_Loader_String,
-    Twig_Environment,
-    Twig_Filter_Function;
-
+use Twig_Environment;
+use Twig_Filter_Function;
+use Twig_Loader_String;
 
 /**
  * This class takes the output from 'parser', and generate the markdown
@@ -18,7 +15,6 @@ use
  */
 class Generator
 {
-
     /**
      * Output directory
      *
@@ -57,12 +53,10 @@ class Generator
      */
     public function __construct(array $classDefinitions, $outputDir, $templateDir, $linkTemplate = '%c.md')
     {
-
         $this->classDefinitions = $classDefinitions;
+        $this->linkTemplate = $linkTemplate;
         $this->outputDir = $outputDir;
         $this->templateDir = $templateDir;
-        $this->linkTemplate = $linkTemplate;
-
     }
 
     /**
@@ -70,8 +64,8 @@ class Generator
      *
      * @return void
      */
-    public function run() {
-
+    public function run()
+    {
         $loader = new Twig_Loader_String();
         $twig = new Twig_Environment($loader);
 
@@ -84,7 +78,7 @@ class Generator
         foreach ($this->classDefinitions as $className => $data) {
             $output = $twig->render(
                 file_get_contents($this->templateDir . '/class.twig'),
-                $data
+                $data,
             );
 
             file_put_contents($this->outputDir . '/' . $data['fileName'], $output);
@@ -103,34 +97,26 @@ class Generator
      * @param mixed $className
      * @return void
      */
-    static function classLink($className, $label = null) {
-
+    static function classLink($className, $label = null)
+    {
         $classDefinitions = $GLOBALS['PHPDocMD_classDefinitions'];
         $linkTemplate = $GLOBALS['PHPDocMD_linkTemplate'];
 
-        $returnedClasses = array();
+        $returnedClasses = [];
+        foreach(explode('|', $className) as $class) {
+            $class = trim($class,'\\ ');
+            $label = $label ?: $class;
 
-        foreach(explode('|', $className) as $oneClass) {
-
-            $oneClass = trim($oneClass,'\\ ');
-
-            $myLabel = $label?:$oneClass;
-
-            if (isset($classDefinitions[$oneClass])) {
-
-                $link = array_pop(explode('\\', $oneClass));
+            if (isset($classDefinitions[$class])) {
+                $link = array_pop(explode('\\', $class));
                 $link = strtr($linkTemplate, array('%c' => $link));
                 $link = str_replace('.md', '.html', $link);
                 $link = strtolower($link);
 
-                $returnedClasses[] = "[" . $myLabel . "](" . $link . ')';
-
+                $returnedClasses[] = sprintf('[%s](%s)', $label, $link);
             }
-
         }
 
        return implode('|', $returnedClasses);
-
     }
-
 }
