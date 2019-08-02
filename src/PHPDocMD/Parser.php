@@ -88,14 +88,14 @@ class Parser
                 'abstract' => (string)$class['abstract'] == 'true',
                 'className' => $className,
                 'constants' => $this->parseConstants($class),
-                'deprecated' => count($class->xpath('docblock/tag[@name="deprecated"]'))>0,
+                'deprecated' => count($class->xpath('docblock/tag[@name="deprecated"]')) > 0,
                 'description' => (string)$class->docblock->description,
                 'extends' => $extends,
                 'fileName' => $fileName,
                 'implements' => $implements,
                 'isClass' => $class->getName() === 'class',
                 'isInterface' => $class->getName() === 'interface',
-                'longDescription' => (string)$class->docblock->{"long-description"},
+                'longDescription' => (string)$class->docblock->{'long-description'},
                 'methods' => $this->parseMethods($class),
                 'namespace' => (string)$class['namespace'],
                 'properties' => $this->parseProperties($class),
@@ -183,9 +183,9 @@ class Parser
 
             $returnType = str_replace('\|', '|', $return['type'] ?? '');
             $argumentStr = str_replace('\|', '|', $argumentStr);
-            $signature = $returnType . ' ' . $className . '::' . $methodName . '('.$argumentStr.')';
+            $signature = $returnType . ' ' . $className . '::' . $methodName . '(' . $argumentStr . ')';
 
-            $description = (string)$method->docblock->description . "\n" . (string)$method->docblock->{"long-description"};
+            $description = (string)$method->docblock->description . "\n" . (string)$method->docblock->{'long-description'};
             $description = trim($description);
             $description = preg_replace('@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.-]*(\?\S+)?)?)?)@', '[$1]($1)', $description);
 
@@ -249,10 +249,10 @@ class Parser
                 'default' => $default,
                 'definedBy' => $className,
                 'deprecated' => count($class->xpath('docblock/tag[@name="deprecated"]'))>0,
-                'description' => (string)$xProperty->docblock->description . "\n\n" . (string)$xProperty->docblock->{"long-description"},
+                'description' => (string)$xProperty->docblock->description . "\n\n" . (string)$xProperty->docblock->{'long-description'},
                 'name' => $propName,
                 'signature' => $signature,
-                'static' => ((string)$xProperty['static'])=="true",
+                'static' => ((string)$xProperty['static']) == 'true',
                 'type' => $type,
                 'visibility' => $visibility,
             );
@@ -283,7 +283,7 @@ class Parser
             $constants[$name] = array(
                 'definedBy' => $className,
                 'deprecated' => count($class->xpath('docblock/tag[@name="deprecated"]'))>0,
-                'description' => (string)$xConstant->docblock->description . "\n\n" . (string)$xConstant->docblock->{"long-description"},
+                'description' => (string)$xConstant->docblock->description . "\n\n" . (string)$xConstant->docblock->{'long-description'},
                 'name' => $name,
                 'signature' => sprintf('const %s = %s', $name, $value),
                 'value' => $value,
