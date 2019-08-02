@@ -1,37 +1,41 @@
-## Constants
+# {{ shortClass }}
 
+## Constants
 {% for constant in constants %}
 * **{{ constant.name }}**
 {% endfor %}
 
 ## Methods
 {% for method in methods %}
-
 ### {{ method.name }}
 
 {% if method.deprecated %}
 _Deprecated: {{ method.deprecated.description }}_
 {% endif %}
 
-    {{ method.signature|raw }}
+```php
+{{ shortClass }}::{{ method.name }}({% for argument in method.arguments %}
+{{- argument.types ? argument.types|join('|')~' ' }}
+{{- argument.byReference ? '&' }}
+{{- argument.name }}{{ argument.default ? ' = '~argument.default }}
+{%- if not loop.last %}, {% endif %}
+{%- endfor %})
+{{- method.response.types ? ': '~method.response.types|join('|') }}
+```
 
 {{ method.description|raw }}
 
 {% if method.arguments %}
 #### Arguments
 {% for argument in method.arguments %}
-* `{{ argument.name }}` **{% if argument.type %}{{ argument.type }}{% else %}mixed{% endif %}**{% if argument.description %} - {{ argument.description }}{% endif %}
-
+* `{{ argument.name }}` **{{ argument.type ? argument.type : 'mixed' }}**{{ argument.description ? ' - ' ~ argument.description : '' }}
 {% endfor %}
-
 {% endif %}
 
 {% if method.return %}
 #### Return values
 * **{{ method.return.type }}** {{ method.return.description }}
-
 {% endif %}
 
 ---
-
 {% endfor %}
