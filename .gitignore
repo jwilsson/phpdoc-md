@@ -1,9 +1,5 @@
-.*.swp
 .DS_Store
-composer.lock
+bin/phpdoc
+bin/phpdoc.php
 docs
 vendor/
-
-# Binaries
-/bin/phpdoc
-/bin/phpdoc.php
