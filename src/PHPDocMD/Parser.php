@@ -130,9 +130,10 @@ class Parser
                 $return = $return[0];
 
                 $description = (string)$return['description'];
-                $description = strip_tags(html_entity_decode($description));
+                $description = html_entity_decode($description);
+                $description = strip_tags($description);
                 $description = str_replace('|', '\|', $description);
-                $description = str_replace('- ', '    * ', $description);
+                $description = str_replace('- ', "\n    * ", $description);
 
                 $type = str_replace('|', '\|', (string)$return['type']);
 
@@ -161,7 +162,7 @@ class Parser
                     if ((string)$tag['description']) {
                         $description = (string)$tag['description'];
                         $description = html_entity_decode($description);
-                        $description = str_replace('<li>', '    * ', $description);
+                        $description = str_replace('- ', "\n    * ", $description);
                         $description = strip_tags($description);
                         $description = preg_replace('/^\h*\v+/m', '', $description); // Remove blank lines
 

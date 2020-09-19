@@ -1,10 +1,6 @@
 <?php
 namespace PHPDocMD;
 
-use Twig_Environment;
-use Twig_Filter_Function;
-use Twig_Loader_String;
-
 /**
  * This class takes the output from 'parser', and generate the markdown
  * templates.
@@ -66,20 +62,15 @@ class Generator
      */
     public function run()
     {
-        $loader = new Twig_Loader_String();
-        $twig = new Twig_Environment($loader);
+        $loader = new \Twig\Loader\FilesystemLoader('../templates');
+        $twig = new \Twig\Environment($loader);
 
-        // Sad, sad globals
-        $GLOBALS['PHPDocMD_classDefinitions'] = $this->classDefinitions;
-        $GLOBALS['PHPDocMD_linkTemplate'] = $this->linkTemplate;
-
-        $twig->addFilter('classLink', new Twig_Filter_Function('PHPDocMd\\Generator::classLink'));
+        $classLinkFilter = new \Twig\TwigFilter('classLink', [$this, 'classLink']);
+        $twig->addFilter($classLinkFilter);
 
         foreach ($this->classDefinitions as $className => $data) {
-            $output = $twig->render(
-                file_get_contents($this->templateDir . '/class.twig'),
-                $data,
-            );
+            $output = $twig->render('class.twig', $data);
+            $output = html_entity_decode($output, ENT_QUOTES | ENT_XML1);
 
             file_put_contents($this->outputDir . '/' . $data['fileName'], $output);
         }
@@ -97,19 +88,16 @@ class Generator
      * @param mixed $className
      * @return void
      */
-    static function classLink($className, $label = null)
+    public function classLink($className, $label = null)
     {
-        $classDefinitions = $GLOBALS['PHPDocMD_classDefinitions'];
-        $linkTemplate = $GLOBALS['PHPDocMD_linkTemplate'];
-
         $returnedClasses = [];
-        foreach(explode('|', $className) as $class) {
+        foreach (explode('|', $className) as $class) {
             $class = trim($class,'\\ ');
             $label = $label ?: $class;
 
-            if (isset($classDefinitions[$class])) {
+            if (isset($this->classDefinitions[$class])) {
                 $link = array_pop(explode('\\', $class));
-                $link = strtr($linkTemplate, array('%c' => $link));
+                $link = strtr($this->linkTemplate, array('%c' => $link));
                 $link = str_replace('.md', '.html', $link);
                 $link = strtolower($link);
 
@@ -117,6 +105,6 @@ class Generator
             }
         }
 
-       return implode('|', $returnedClasses);
+        return implode('|', $returnedClasses);
     }
 }

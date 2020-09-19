@@ -17,7 +17,7 @@ _Deprecated_
 {{ shortClass }}::{{ method.name }}({% for argument in method.arguments %}
 {{- argument.types ? argument.types|join('|') ~ ' ' }}
 {{- argument.byReference ? '&' }}
-{{- argument.name }}{{ argument.default ? ' = ' ~ argument.default }}
+{{- '$' ~ argument.name }}{{ argument.default ? ' = ' ~ argument.default }}
 {%- if not loop.last %}, {% endif %}
 {%- endfor %})
 {{- method.response.types ? ': ' ~ method.response.types|join('|') }}
@@ -28,7 +28,7 @@ _Deprecated_
 {% if method.arguments %}
 #### Arguments
 {% for argument in method.arguments %}
-* `{{ argument.name }}` **{{ argument.type ? argument.type : 'mixed' }}**{{ argument.description ? ' - ' ~ argument.description : '' }}
+* `${{ argument.name }}` **{{ argument.type ? argument.type : 'mixed' }}**{{ argument.description ? ' - ' ~ argument.description : '' }}
 {% endfor %}
 {% endif %}
 
