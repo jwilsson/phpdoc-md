@@ -1,5 +1,5 @@
 .DS_Store
-bin/phpdoc
-bin/phpdoc.php
+bin
+!bin/phpdocmd
 docs
 vendor/
