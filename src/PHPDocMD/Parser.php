@@ -130,10 +130,7 @@ class Parser
                 $return = $return[0];
 
                 $description = (string)$return['description'];
-                $description = html_entity_decode($description);
-                $description = strip_tags($description);
-                $description = str_replace('|', '\|', $description);
-                $description = str_replace('- ', "\n    * ", $description);
+                $description = $this->cleanDescripton($description);
 
                 $type = str_replace('|', '\|', (string)$return['type']);
 
@@ -159,14 +156,11 @@ class Parser
                         $nArgument['type'] = $type;
                     }
 
-                    if ((string)$tag['description']) {
-                        $description = (string)$tag['description'];
-                        $description = html_entity_decode($description);
-                        $description = str_replace('- ', "\n    * ", $description);
-                        $description = strip_tags($description);
-                        $description = preg_replace('/^\h*\v+/m', '', $description); // Remove blank lines
+                    $description = (string)$tag['description'];
+                    if ($description) {
+                        $description = $this->cleanDescripton($description);
 
-                        $nArgument['description'] = str_replace('|', '\|', $description);
+                        $nArgument['description'] = preg_replace('/^\h*\v+/m', '', $description); // Remove blank lines
                     }
 
                     if ((string)$tag['variable']) {
@@ -363,5 +357,14 @@ class Parser
         );
 
         return $newProperties;
+    }
+
+    protected function cleanDescripton($description) {
+        $description = html_entity_decode($description);
+        $description = strip_tags($description);
+        $description = str_replace('|', '\|', $description);
+        $description = str_replace(' - ', "\n    * ", $description);
+
+        return $description;
     }
 }
