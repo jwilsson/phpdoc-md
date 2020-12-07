@@ -194,11 +194,11 @@ class Parser
             if (count($deprecated)) {
                 $deprecated = $deprecated[0];
 
-                $description = (string)$deprecated['description'];
-                $description = strip_tags(html_entity_decode($description));
+                $deprecatedDescription = (string)$deprecated['description'];
+                $deprecatedDescription = strip_tags(html_entity_decode($deprecatedDescription));
 
                 $deprecated = array(
-                    'description' => $description,
+                    'description' => $deprecatedDescription,
                 );
             }
 
