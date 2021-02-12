@@ -1,5 +1,10 @@
 # {{ shortClass }}
 
+## Table of Contents
+{% for method in methods %}
+* [{{ method.name }}](#{{ method.name|lower }})
+{% endfor %}
+
 ## Constants
 {% for constant in constants %}
 * **{{ constant.name }}**
